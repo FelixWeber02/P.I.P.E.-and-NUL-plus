@@ -1,14 +1,14 @@
 from CompleteProcess import bash_prep
 
-fileloc = '/mnt/buf0/PulsarNulling/fil_60122_84453_738654174_J1136+1551_0001/LoB.C0928/'
+fileloc = '/mnt/buf0/PulsarNulling/fil_60122_84453_738654174_J1136+1551_0001/LoB.C0928/' # Location of the directory containing the relevant .fil file
 
-NUL_home = '/mnt/buf0/PulsarNulling/NUL+/'
+NUL_home = '/mnt/buf0/PulsarNulling/NUL+/' # Location of this package
 
 DM = 4.84066 
 
 pulsar = 'J1136+1551'
 
-plot_rfi = False
+plot_rfi = False  # use this as a diagnostic for RFI mitigation
 
 int_time = 0.05  # this is the integration time for RFI. For high resolution data, this should be <= 0.1 s
 
