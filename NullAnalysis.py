@@ -14,10 +14,6 @@ import sys
 import argparse
 parser = argparse.ArgumentParser()
 
-#importing kaplan code
-import kaplan_source as nulling_mcmc
-import kaplan_output_maker as kaplan
-
 parser.add_argument("-a", help="To Loop over all", const=True, default=False, action='store_const')
 parser.add_argument("--nopltsave", help="Don't save plots", const=True, default=False, action='store_const')
 parser.add_argument("--nopltshow", help="Don't save plots", const=True, default=False, action='store_const')
