@@ -1,8 +1,6 @@
 ''' Our Goal is to run a completed process.py file to push full .fil files through the pipeline '''
 ''' This preps all .bash files in the pipeline that can be run individually or in one full sweep '''
 
-#Inputs needed - note all directory paths need to end with an '/'
-
 # Felix Weber, 2023
 
 import glob
