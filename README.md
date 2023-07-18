@@ -18,7 +18,7 @@ pipe.bash will output a lot of diagnostic information as the file is being proce
 
 # Usage - NullAnalysis.py (Time Series Extraction)
 
-Once you have your final .ascii files produces, you can move them into one directory to extract individual time series on their pulses. This extraction is automated using NullAnalysis.py. Usage is simply:
+Once you have your final .ascii files produced, you can move them into one directory to extract individual time series on their pulses. This extraction is automated using NullAnalysis.py. Usage is simply:
 
 python NullAnalysis.py {-options}
 
