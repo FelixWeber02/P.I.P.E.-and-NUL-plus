@@ -2,7 +2,7 @@
 
 PIPE (Pipeline for Interesting Pulsars and maybe E.t.) and NUL-plus are a streamlined pipeline for processing raw filterbank data from the ATA to produce relevant time series for nulling analysis. The core of the analysis is wrapped by PIPE into a user-friendly format, taking care of RFI, Dedispersion, Tempo Corrections, and Folding, essentially out of the box.
 
-# Usage - P.I.P.E.
+# Usage - P.I.P.E. (.fil Processing)
 
 In the current setup, PIPE takes one .fil file at a time. All relevant inputs are handled in run_pipe.py, where the .fil filepath, working homepath, pulsar name and DM, and other relevant information is inputted in some editor of your choice. To run:
 
