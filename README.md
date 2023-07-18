@@ -7,6 +7,7 @@ PIPE (Pipeline for Interesting Pulsars and maybe E.t.) and NUL-plus are a stream
 In the current setup, PIPE takes one .fil file at a time. All relevant inputs are handled in run_pipe.py, where the .fil filepath, working homepath, pulsar name and DM, and other relevant information is inputted in some editor of your choice. To run:
 
   python run_pipe.py
+  
   (pulsar) bash pipe.bash
 
 When running run_pipe.py for the first time, you will see many .bash files and directories pop up - don't worry. The directories are there to handle data as it is being put through the pipeline, and the .bash files represent the individual operations on our data (rfi, dedispersion, etc.). 
