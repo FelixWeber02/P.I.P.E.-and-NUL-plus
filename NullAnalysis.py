@@ -20,6 +20,7 @@ import kaplan_output_maker as kaplan
 
 parser.add_argument("-a", help="To Loop over all", const=True, default=False, action='store_const')
 parser.add_argument("--nopltsave", help="Don't save plots", const=True, default=False, action='store_const')
+parser.add_argument("--nopltshow", help="Don't save plots", const=True, default=False, action='store_const')
 parser.add_argument("--asksave", help="Ask if to save Pulse Intensities", const=True, default=False, action='store_const')
 
 args = parser.parse_args()
@@ -160,7 +161,8 @@ while In != 'n':
 
     if args.nopltsave == False:
         plt.savefig(pulsar + "_" + node +"_Diagnostic.png")
-    plt.show()
+    if args.nopltshow == False:
+        plt.show()
     
     if args.asksave == True:
         print("Do you want to save this pulse intensity time series? (y/n)")
