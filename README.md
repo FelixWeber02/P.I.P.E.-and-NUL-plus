@@ -27,11 +27,16 @@ Before running, make sure to update the directory path in the second line of the
 The options for NullAnalysis.py are:
 
 "-a" : Automatically loops through all nodes one by one
+
 "--nopltsave" : Don't save diagnostic plots
+
 "--nopltshow" : Don't display diagnostic plots
+
 "--asksave" : Ask user if they want to save the extracted time series
+
 
 Notes on options:
 
 "--asksave" should be used once you are ready to extract time series data.
+
 "-a --nopltshow" automatically loops through all data and saves diagnostics without wasting time displaying the plots.
