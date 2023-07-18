@@ -33,7 +33,7 @@ def rfifinder(path, NUL_home, plot_rfi, int_time):
                 print(command)
                 print(command2)
                 bash_file.write(command + "\n")
-                bash_file.write(command2 + "\n")
+                #bash_file.write(command2 + "\n")
 
         bash_file.close()
 
