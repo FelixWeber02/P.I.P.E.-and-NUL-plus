@@ -18,6 +18,7 @@ parser.add_argument("-a", help="To Loop over all", const=True, default=False, ac
 parser.add_argument("--nopltsave", help="Don't save plots", const=True, default=False, action='store_const')
 parser.add_argument("--nopltshow", help="Don't save plots", const=True, default=False, action='store_const')
 parser.add_argument("--asksave", help="Ask if to save Pulse Intensities", const=True, default=False, action='store_const')
+parser.add_argument("--timeseries", help="Only extract time series of all .fil files in the directory", const=True, default=False, action='store_const')
 
 args = parser.parse_args()
 
@@ -25,6 +26,11 @@ All = args.a
 
 plt.rcParams.update({'font.size': 8})
 
+if args.timeseries == True:
+    All = True
+    args.nopltsave = True
+    args.nopltshow = True
+    args.asksave = True
 
 # Now the fun begins:
 file_list = glob.glob(path + "*.ascii")
@@ -161,8 +167,11 @@ while In != 'n':
         plt.show()
     
     if args.asksave == True:
-        print("Do you want to save this pulse intensity time series? (y/n)")
-        ans = input()
+        if (args.timeseries == True) and (len(Peak_Locs) < 3):
+            ans = 'y'
+        else:
+            print("Do you want to save this pulse intensity time series? (y/n)")
+            ans = input()
         if ans == 'y':
             Data = ''
             for n in sum_time_curve:
