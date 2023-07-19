@@ -34,6 +34,8 @@ The options for NullAnalysis.py are:
 
 "--asksave" : Ask user if they want to save the extracted time series
 
+"--timeseries" : Loops through all .fil files and only produces time series (no plotting, and will ask to save for RFI-heavy files)
+
 
 Notes on options:
 
