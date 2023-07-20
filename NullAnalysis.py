@@ -3,7 +3,7 @@ path = '../Data/J0953+0755/'
 
 # Fine Tuning:
 peak_width_1 = 0.5
-peak_width_2 = 0.8
+peak_width_2 = 0.95
 
 ''' The fine tuning arguments should be modified when peak extraction or background filtering is not ideal. 
 peak_width_1 sets how much of the peak is being read for peak intensity extraction. 
