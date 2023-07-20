@@ -1,10 +1,12 @@
 # P.I.P.E. and NUL-plus
 
-PIPE (Pipeline for Interesting Pulsars and maybe E.t.) and NUL-plus are a streamlined pipeline for processing raw filterbank data from the ATA to produce relevant time series for nulling analysis. The core of the analysis is wrapped by PIPE into a user-friendly format, taking care of RFI, Dedispersion, Tempo Corrections, and Folding, essentially out of the box.
+PIPE (Pipeline for Interesting Pulsars and maybe E.t.) and NUL-plus are a streamlined pipeline for processing raw filterbank data from the ATA to produce relevant time series for nulling analysis. The core of the analysis is wrapped by PIPE into a user-friendly format, taking care of RFI, Dedispersion, Tempo Corrections, and Folding, essentially out of the box. Note: intended mostly for use on ATA servers (PIPE) and personal machines (NullAnalysis.py)
 
 # Usage - P.I.P.E. (.fil Processing)
 
-In the current setup, PIPE takes one .fil file at a time. All relevant inputs are handled in run_pipe.py, where the .fil filepath, working homepath, pulsar name and DM, and other relevant information is inputted in some editor of your choice. To run:
+In the current setup, PIPE can take one .fil file at a time, or a full observation batch. 
+
+To run one .fil at a time, we will be using run_pipe.py. All relevant inputs are handled in run_pipe.py, where the .fil filepath, working homepath, pulsar name and DM, and other relevant information is inputted in some editor of your choice. To run:
 
   python run_pipe.py
   
@@ -15,6 +17,14 @@ When running run_pipe.py for the first time, you will see many .bash files and d
 Note: you will need to be running in the ATA pulsar conda environment for pipe.bash to work.
 
 pipe.bash will output a lot of diagnostic information as the file is being processed. Ideally there should be no warnings or errors. The final time series can then be located in ./final_asciis/.
+
+To run a full observation batch, we can use run_auto_pipe.py. Opening it up, you will see that the inputs are nearly identitical, however instead of requiring a directory with one .fil, it requires the path for the observation directory (the one with all the LoB/LoC folders). Once putting in the right inputs, you can run it using:
+
+(pulsar) python run_auto_pipe.py
+
+This will automatically loop through all nodes, generating and running each respective .fil files through PIPE, one by one. The program will end once all nodes available have been processed. This is most useful with long observations. 
+
+Note: before running run_auto_pipe.py make sure you have removed any nodes that you know don't contain any pulses or have way too much RFI (usually LoC nodes) - you will save precious time this way.
 
 # Usage - NullAnalysis.py (Time Series Extraction)
 
