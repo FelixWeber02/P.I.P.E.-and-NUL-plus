@@ -3,7 +3,7 @@ path = '../Data/J0953+0755/'
 
 # Fine Tuning:
 peak_width_1 = 0.5
-peak_widht_2 = 0.8
+peak_width_2 = 0.8
 
 ''' The fine tuning arguments should be modified when peak extraction or background filtering is not ideal. 
 peak_width_1 sets how much of the peak is being read for peak intensity extraction. 
@@ -131,7 +131,7 @@ while In != 'n':
 
     Peak_Locs = res[0]
 
-    res = sig.peak_widths(sum_curve, Peak_Locs, rel_height=0.7)
+    res = sig.peak_widths(sum_curve, Peak_Locs, rel_height=peak_width_1)
     
     extract = filt_array[:,int(res[2][0]):int(res[3][0])]
     
@@ -139,7 +139,7 @@ while In != 'n':
 
         print("Filtering...")
         
-        res2 = sig.peak_widths(sum_curve, Peak_Locs, rel_height=0.8)
+        res2 = sig.peak_widths(sum_curve, Peak_Locs, rel_height=peak_width_2)
 
         background_1 = filt_array[:,int(res2[2][0])-int(res[0][0]):int(res2[2][0])]
         background_2 = filt_array[:,int(res2[3][0]):int(res2[3][0])+int(res[0][0])]
