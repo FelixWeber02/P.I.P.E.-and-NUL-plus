@@ -65,4 +65,4 @@ Eventhough PIPE takes care of most of the RFI in our data, we will still observe
 
 Note that the quality of this process is dependant on the fine-tuning paramter "peak_width_2" (float: 0.0 to 1.0) set in the beginning of NullAnalysis.py. This paramter controls how much of the area around the peak is ignored when interpolating the background. Generally speaking, best practice is to lower the value as SNR and/or peak width increase, and to increase it as SNR and/or peak width decreases. The following is an example where peak_width_2 was set to high for an observation:
 
-![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/Bad_Back_Iter.png?raw=true)
+![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/Back_Bad_Iter.png?raw=true)
