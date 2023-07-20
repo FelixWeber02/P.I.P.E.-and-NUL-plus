@@ -58,12 +58,10 @@ Notes on options:
 "-a --nopltshow" automatically loops through all data and saves diagnostics without wasting time displaying the plots.
 
 Diagnostic plots produced by NullAnalysis.py will look like this for each individual node:
-
 ![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/J1136+1551_clean_LoB.C1312_Diagnostic.png?raw=true)
-
 The full red lines will show what is being summed for peak intensities and the dashed red line is the base power level used for peak searches. This is useful to diagnose SNR and quality of the data in question.
 
-# Usage - Filtering with NullAnalysis.py
+# Usage - Filtering with NullAnalysis.py (-f)
 
 Eventhough PIPE takes care of most of the RFI in our data, we will still observe large amounts of background noise, creating fluctuating power levels over time. This can directly interfere with measurements of pulse intensities. When using the "-f" option, NullAnalysis (if there aren't too many peaks) will interpolate the background power levels:
 
@@ -72,10 +70,14 @@ Eventhough PIPE takes care of most of the RFI in our data, we will still observe
 Note that the quality of this process is dependant on the fine-tuning paramter "peak_width_2" (float: 0.0 to 1.0) set in the beginning of NullAnalysis.py. This paramter controls how much of the area around the peak is ignored when interpolating the background. Generally speaking, best practice is to lower the value as SNR and/or peak width increase, and to increase it as SNR and/or peak width decreases. The following is an example where peak_width_2 was set to high for an observation (peak_width_2 = 0.95):
 
 ![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/Back_Bad_Iter.png?raw=true)
+
 Setting peak_width_2 = 0.8 we improve the interpolation:
 
 ![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/Back_Good_Iter.png?raw=true)
 
 Note, we are trying to remove low-frequency fluctiations in the background, so there will usually still be some small fluctiations present in the extracted pulses, however our SNR is now much higher. The rule of thumb here is that the area in the extracted background where we interpolated shouldn't look *too* different from the rest of the background. 
 
-The reason why this parameter is important is because ideally we want to interpolate over as few data points as possible, while also not allowing pulse intensity changes to impact our measurement of the background. The smaller peak_width_2 is, the fewer points we are ignoring, but the more likely we are to include pulse fluctiations into our interpolation. Therefore finding the right balance is critical. Future versions may include a progamatic tuning system for this based on pulse height, width and overall SNR. 
+The reason why this parameter is important is because ideally we want to interpolate over as few data points as possible, while also not allowing pulse intensity changes to impact our measurement of the background. The smaller peak_width_2 is, the fewer points we are ignoring, but the more likely we are to include pulse fluctiations into our interpolation. Therefore finding the right balance is critical. Future versions may include a progamatic tuning system for this based on pulse height, width and overall SNR. After filtering diagnostic plots will look like the following:
+![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/J0953+0755_2_LoB.C1312_Diagnostic.png?raw=true)
+
+# Usage - Compiling Time Series with NullAnalysis.py (-c)
