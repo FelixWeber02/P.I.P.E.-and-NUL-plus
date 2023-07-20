@@ -56,3 +56,7 @@ Notes on options:
 "--asksave" should be used once you are ready to extract time series data.
 
 "-a --nopltshow" automatically loops through all data and saves diagnostics without wasting time displaying the plots.
+
+# Usage - Filtering with NullAnalysis.py
+
+Eventhough PIPE takes care of most of the RFI in our data, we will still observe large amounts of background noise, creating fluctuating power levels over time. This can directly interfere with measurements of pulse intensities. When using the "-f" option, NullAnalysis (if there aren't too many peaks) will interpolate the background power levels
