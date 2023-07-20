@@ -1,6 +1,17 @@
 # Necessary Information
 path = '../Data/J0953+0755/'
 
+# Fine Tuning:
+peak_width_1 = 0.5
+peak_widht_2 = 0.8
+
+''' The fine tuning arguments should be modified when peak extraction or background filtering is not ideal. 
+peak_width_1 sets how much of the peak is being read for peak intensity extraction. 
+peak_width_2 sets how much of the pulse area is ignored when filtering the background. 
+peak_width_2 should always be bigger than peak_width_1. Generally speaking, peak_width_2 should be decreased the wider 
+the pulse and the higher the SNR is. Ideally, when viewing the filtering diagnostics, the extracted pulses should 
+show little to no background fluctuations, while the extracted background should show minimal tampering where the pulses were removed.'''
+
 #importing standard packages
 import numpy as np
 import matplotlib.pyplot as plt
