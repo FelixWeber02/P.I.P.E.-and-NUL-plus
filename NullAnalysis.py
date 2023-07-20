@@ -124,9 +124,9 @@ while In != 'n':
     
     extract = filt_array[:,int(res[2][0]):int(res[3][0])]
     
-    print("Filtering...")
-    
     if (args.filter == True) and (len(Peak_Locs) < 3):
+
+        print("Filtering...")
         
         res2 = sig.peak_widths(sum_curve, Peak_Locs, rel_height=0.8)
 
