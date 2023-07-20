@@ -59,4 +59,6 @@ Notes on options:
 
 # Usage - Filtering with NullAnalysis.py
 
-Eventhough PIPE takes care of most of the RFI in our data, we will still observe large amounts of background noise, creating fluctuating power levels over time. This can directly interfere with measurements of pulse intensities. When using the "-f" option, NullAnalysis (if there aren't too many peaks) will interpolate the background power levels
+Eventhough PIPE takes care of most of the RFI in our data, we will still observe large amounts of background noise, creating fluctuating power levels over time. This can directly interfere with measurements of pulse intensities. When using the "-f" option, NullAnalysis (if there aren't too many peaks) will interpolate the background power levels:
+
+![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/Good_Back_Iter.png?raw=true)
