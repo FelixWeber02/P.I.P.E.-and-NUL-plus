@@ -83,7 +83,7 @@ Note: the green dashed lines represent the locations where the pulses were remov
 
 # Usage - Compiling Time Series with NullAnalysis.py (-c)
 
-When using the compilation option (-c), after processing a node, NullAnalysis.py will ask if you want to compile the given node. If you choose yes, it will save the peak profiles in the outlined red regions (as seen in the diagnostics) and sum them together for a complete pulse intensity time series. It will also plot a side by side of every chosen node, hopefully displaying common bright and nulling spots across all nodes:  
+When using the compilation option (-c), after processing a node, NullAnalysis.py will ask if you want to compile the given node. If you choose yes, it will save the peak profiles in the outlined red regions (as seen in the diagnostics) and sum them together with other compiled nodes for a complete pulse intensity time series. It will also plot a side by side of every chosen node, hopefully displaying common bright and nulling spots across all nodes:  
 ![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/J0953+0755_2_compiled_diagnostic.png?raw=true)
 This is useful as a final sanity check to see if there are any major blips in a node that haven't been removed. After plotting the program will ask to save the final compiled time series as well.
 
