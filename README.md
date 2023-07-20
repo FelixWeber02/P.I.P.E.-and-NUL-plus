@@ -28,6 +28,10 @@ The options for NullAnalysis.py are:
 
 "-a" : Automatically loops through all nodes one by one
 
+"-c" : Compile selected nodes for a complete time series
+
+"-f" : Filter out background noise/rfi
+
 "--nopltsave" : Don't save diagnostic plots
 
 "--nopltshow" : Don't display diagnostic plots
