@@ -57,6 +57,12 @@ Notes on options:
 
 "-a --nopltshow" automatically loops through all data and saves diagnostics without wasting time displaying the plots.
 
+Diagnostic plots produced by NullAnalysis.py will look like this for each individual node:
+
+![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/J1136+1551_clean_LoB.C1312_Diagnostic.png?raw=true)
+
+The full red lines will show what is being summed for peak intensities and the dashed red line is the base power level used for peak searches. This is useful to diagnose SNR and quality of the data in question.
+
 # Usage - Filtering with NullAnalysis.py
 
 Eventhough PIPE takes care of most of the RFI in our data, we will still observe large amounts of background noise, creating fluctuating power levels over time. This can directly interfere with measurements of pulse intensities. When using the "-f" option, NullAnalysis (if there aren't too many peaks) will interpolate the background power levels:
