@@ -79,5 +79,11 @@ Note, we are trying to remove low-frequency fluctiations in the background, so t
 
 The reason why this parameter is important is because ideally we want to interpolate over as few data points as possible, while also not allowing pulse intensity changes to impact our measurement of the background. The smaller peak_width_2 is, the fewer points we are ignoring, but the more likely we are to include pulse fluctiations into our interpolation. Therefore finding the right balance is critical. Future versions may include a progamatic tuning system for this based on pulse height, width and overall SNR. After filtering diagnostic plots will look like the following:
 ![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/J0953+0755_2_LoB.C1312_Diagnostic.png?raw=true)
+Note: the green dashed lines represent the locations where the pulses were removed for background interpolation.
 
 # Usage - Compiling Time Series with NullAnalysis.py (-c)
+
+When using the compilation option (-c), after processing a node, NullAnalysis.py will ask if you want to compile the given node. If you choose yes, it will save the peak profiles in the outlined red regions (as seen in the diagnostics) and sum them together for a complete pulse intensity time series. It will also plot a side by side of every chosen node, hopefully displaying common bright and nulling spots across all nodes:  
+![alt text](https://github.com/FelixWeber02/P.I.P.E.-and-NUL-plus/blob/main/README_Images/J0953+0755_2_compiled_diagnostic.png?raw=true)
+This is useful as a final sanity check to see if there are any major blips in a node that haven't been removed. After plotting the program will ask to save the final compiled time series as well.
+
