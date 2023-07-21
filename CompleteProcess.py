@@ -27,9 +27,9 @@ def rfifinder(path, NUL_home, plot_rfi, int_time):
                 command = "rfifind " + file + " -time " + str(int_time) + " -o " +  mjd 
                 if plot_rfi==True:
                         command += " -xwin"
-                command2 = "python " + "../vishal_code/rfi_filter.py " + " -fil " + file + " -home " + home + " -mask " + mjd + "_rfifind.mask"
+                #command2 = "python " + "../vishal_code/rfi_filter.py " + " -fil " + file + " -home " + home + " -mask " + mjd + "_rfifind.mask"
                 print(command)
-                print(command2)
+                #print(command2)
                 bash_file.write(command + "\n")
                 #bash_file.write(command2 + "\n")
 
