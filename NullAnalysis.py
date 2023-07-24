@@ -1,16 +1,11 @@
 # Necessary Information
-path = '../Data/J0953+0755/'
+path = '../Data/J0332+5434_2/'
 
 # Fine Tuning:
 peak_width_1 = 0.5
-peak_width_2 = 0.95
+peak_width_2 = 0.8
 
-''' The fine tuning arguments should be modified when peak extraction or background filtering is not ideal. 
-peak_width_1 sets how much of the peak is being read for peak intensity extraction. 
-peak_width_2 sets how much of the pulse area is ignored when filtering the background. 
-peak_width_2 should always be bigger than peak_width_1. Generally speaking, peak_width_2 should be decreased the wider 
-the pulse and the higher the SNR is. Ideally, when viewing the filtering diagnostics, the extracted pulses should 
-show little to no background fluctuations, while the extracted background should show minimal tampering where the pulses were removed.'''
+''' The fine tuning arguments should be modified when peak extraction or background filtering is not ideal. peak_width_1 sets how much of the peak is being read for peak intensity extraction. peak_width_2 sets how much of the pulse area is ignored when filtering the background. peak_width_2 should always be bigger than peak_width_1. Generally speaking, peak_width_2 should be decreased the wider the pulse and the higher the SNR is. Ideally, when viewing the filtering diagnostics, the extracted pulses should show little to no background fluctuations, while the extracted background should show minimal tampering where the pulses were removed.'''
 
 #importing standard packages
 import numpy as np
@@ -22,18 +17,18 @@ import scipy.ndimage as nd
 import glob
 import scipy.signal as sig
 import scipy.interpolate as intp
+import scipy.optimize as opti
 import sys
 import argparse
 parser = argparse.ArgumentParser()
 
-#importing kaplan code
-import kaplan_source as nulling_mcmc
-import kaplan_output_maker as kaplan
 
 parser.add_argument("-a", help="To Loop over all", const=True, default=False, action='store_const')
 parser.add_argument("-t", "--timeseries", help="Only extract time series of all .fil files in the directory", const=True, default=False, action='store_const')
 parser.add_argument("-c", "--compile", help="Ask which nodes are good and then compile them", const=True, default=False, action='store_const')
 parser.add_argument("-f", "--filter", help="subtract background noise from found pulse", const=True, default=False, action='store_const')
+parser.add_argument("--fset", help="quickly alter the value of peak_width_2", default=peak_width_2, action='store')
+parser.add_argument("--fauto", help="automatically finds an ideal peak_width_2 –– WIP", const=True, default=False, action='store_const')
 parser.add_argument("--nopltsave", help="Don't save plots", const=True, default=False, action='store_const')
 parser.add_argument("--nopltshow", help="Don't show plots", const=True, default=False, action='store_const')
 parser.add_argument("--asksave", help="Ask if to save Pulse Intensities", const=True, default=False, action='store_const')
@@ -41,6 +36,7 @@ parser.add_argument("--asksave", help="Ask if to save Pulse Intensities", const=
 args = parser.parse_args()
 
 All = args.a
+peak_width_2 = float(args.fset)
 
 plt.rcParams.update({'font.size': 8})
 
@@ -123,76 +119,164 @@ while In != 'n':
 
     # Pulse Loc finder
 
-    fact = 0.3
+    fact = 0.4
 
-    res = sig.find_peaks(sum_curve, height = fact * (np.max(sum_curve)-np.min(sum_curve)) + np.min(sum_curve))
+    res = sig.find_peaks(sum_curve, height = fact * (np.max(sum_curve)-np.average(sum_curve)) + np.average(sum_curve), prominence = 0.5 * (np.max(sum_curve)-np.average(sum_curve)))
 
     print("Peak Locations: ", res[0])
 
     Peak_Locs = res[0]
+    
+    if len(Peak_Locs) != 0:
 
-    res = sig.peak_widths(sum_curve, Peak_Locs, rel_height=peak_width_1)
-    
-    extract = filt_array[:,int(res[2][0]):int(res[3][0])]
-    
-    if (args.filter == True) and (len(Peak_Locs) < 3):
+        res = sig.peak_widths(sum_curve, Peak_Locs, rel_height=peak_width_1)
+
+        extract = filt_array[:,int(res[2][0]):int(res[3][0])]
 
         print("Filtering...")
         
-        res2 = sig.peak_widths(sum_curve, Peak_Locs, rel_height=peak_width_2)
+        if args.fauto == True:
+            
+            sigma = (res[3][0]-res[2][0]) / (2 * np.sqrt(2 * np.log(2)))
+            
+            P = np.max(sum_curve)/1000*20
+            
+            res3 = sig.peak_widths(sum_curve, Peak_Locs, rel_height=0.98)
+            
+            background_10 = filt_array[:,:int(res3[2][0])]
+            background_20 = filt_array[:,int(res3[3][0]):]
+            
+            shape_1 = np.shape(background_10)
+            shape_2 = np.shape(background_20)
+            
+            sep = []
+            int_err = []
+            
+            if shape_1[0] > shape_2[0]:
+                for row in background_10:
+                    for i in np.random.choice(np.linspace(0,len(row)-1,len(row), dtype=int), 40):
+                        point = row[i]
+                        i2 = i
+                        while i2 == i:
+                            i2 = np.random.choice(np.linspace(0,len(row)-1,len(row), dtype=int))
+                        point2 = row[i2]
+                        seps = i2-i
+                        errs = point2 - point
+                        if i < i2:
+                            int_errs = errs*seps - np.sum(row[i:i2])
+                        if i2 < i:
+                            int_errs = errs*seps - np.sum(row[i2:i])
+                        sep.append(seps)
+                        int_err.append(int_errs)
+                row_len = shape_1[0]
+            else:
+                for row in background_20:
+                    for i in np.random.choice(np.linspace(0,len(row)-1,len(row), dtype=int), 40):
+                        point = row[i]
+                        i2 = i
+                        while i2 == i:
+                            i2 = np.random.choice(np.linspace(0,len(row)-1,len(row), dtype=int))
+                        point2 = row[i2]
+                        seps = i2-i
+                        errs = point2 - point
+                        if i < i2:
+                            int_errs = errs*seps - np.sum(row[i:i2])
+                        if i2 < i:
+                            int_errs = errs*seps - np.sum(row[i2:i])
+                        sep.append(seps)
+                        int_err.append(int_errs)
+                row_len = shape_2[0]
+                        
+            bins = np.linspace(-0.3*row_len,0.3*row_len,16*2+1)
+            stds = []
+            bins2 = []
+            
+            for i, Bin in enumerate(bins[1:]):
+                mask = (np.array(sep)>bins[i])&(np.array(sep)<Bin)
+                stds.append(np.std(np.array(int_err)[mask]))
+                bins2.append((bins[i]+Bin)/2)
+                
+            def absfunc(x,N):
+                return np.abs(x*N)
+            
+            #print("bins = ", bins2)
+            
+            mask = (np.array(stds) >= 0) 
+            #print("stds = ", np.array(stds)[mask])
+            
+            fit_res = opti.curve_fit(absfunc, np.array(bins2)[mask], np.array(stds)[mask], p0=[0])
+            
+            N = fit_res[0][0]
+            
+            print("N = ", N)
+            print("sigma = ", sigma)
+            print("P = ", P)
+            
+            if P/N - 2*sigma >= 0:
+                dx = 2 * sigma * np.sqrt(np.log(P**2 / (4 * N**2 * sigma**2)))
+                peak_width_2 = 1 - np.exp(-0.5*(dx/sigma)**2)
+            else:
+                print("Optimized Conditions not met, using default for peak_width_2")
+                peak_width_2 = args.fset
+                
+            print("peak_width_2 = ", peak_width_2)
 
-        background_1 = filt_array[:,int(res2[2][0])-int(res[0][0]):int(res2[2][0])]
-        background_2 = filt_array[:,int(res2[3][0]):int(res2[3][0])+int(res[0][0])]
-        extract2_shape = np.shape(filt_array[:,int(res2[2][0]):int(res2[3][0])])
+        if (args.filter == True) and (len(Peak_Locs) < 3):
 
-        background_1_x = np.linspace(1,np.shape(background_1)[1],np.shape(background_1)[1])
-        background_2_x = np.linspace(1,np.shape(background_2)[1],np.shape(background_2)[1]) + int(res[0][0]) + int(res2[0][0])
+            res2 = sig.peak_widths(sum_curve, Peak_Locs, rel_height=peak_width_2)
 
-        background = np.concatenate((background_1, background_2), axis=1)
-        background_x = np.concatenate((background_1_x, background_2_x))
-        background_pulses = np.linspace(1,number_of_pulses, number_of_pulses)
-        background_x, background_pulses = np.meshgrid(background_x, background_pulses)
-        
-        #print(np.shape(background), np.shape(background_x))
-        
-        background_on_pulse_x = np.linspace(np.shape(background_1)[1], np.shape(background_1)[1] + extract2_shape[1]-1, extract2_shape[1])
+            background_1 = filt_array[:,int(res2[2][0])-int(res[0][0]):int(res2[2][0])]
+            background_2 = filt_array[:,int(res2[3][0]):int(res2[3][0])+int(res[0][0])]
+            extract2_shape = np.shape(filt_array[:,int(res2[2][0]):int(res2[3][0])])
 
-        background_on_pulse = []
-        
-        for i, row in enumerate(background):
-            f = intp.interp1d(background_x[i],row, kind='slinear')
-            background_on_pulse.append(f(background_on_pulse_x))
-        
-        background_on_pulse = np.array(background_on_pulse)
-        
-        full_back = np.concatenate((filt_array[:,:int(res2[2][0])],background_on_pulse,filt_array[:,int(res2[3][0]):]), axis=1)
-        
-        filt_array -= full_back
-        
-        fig, axs = plt.subplots(1,2, figsize=(16,8), sharey='row')
-        
-        axs[0].set_title("Extracted Background: " + pulsar + " " + node)
-        axs[0].imshow(full_back, aspect='auto')
-        axs[0].set_xlabel("Relative Phase index / 1024")
-        axs[0].set_ylabel("Pulse #")
-        
-        axs[1].set_title("Extracted Pulses " + pulsar + " " + node)
-        axs[1].imshow(filt_array, aspect='auto')
-        axs[1].set_xlabel("Relative Phase index / 1024")
-        
-        plt.show()
+            background_1_x = np.linspace(1,np.shape(background_1)[1],np.shape(background_1)[1])
+            background_2_x = np.linspace(1,np.shape(background_2)[1],np.shape(background_2)[1]) + int(res[0][0]) + int(res2[0][0])
+
+            background = np.concatenate((background_1, background_2), axis=1)
+            background_x = np.concatenate((background_1_x, background_2_x))
+            background_pulses = np.linspace(1,number_of_pulses, number_of_pulses)
+            background_x, background_pulses = np.meshgrid(background_x, background_pulses)
+
+            #print(np.shape(background), np.shape(background_x))
+
+            background_on_pulse_x = np.linspace(np.shape(background_1)[1], np.shape(background_1)[1] + extract2_shape[1]-1, extract2_shape[1])
+
+            background_on_pulse = []
+
+            for i, row in enumerate(background):
+                f = intp.interp1d(background_x[i],row, kind='slinear')
+                background_on_pulse.append(f(background_on_pulse_x))
+
+            background_on_pulse = np.array(background_on_pulse)
+
+            full_back = np.concatenate((filt_array[:,:int(res2[2][0])],background_on_pulse,filt_array[:,int(res2[3][0]):]), axis=1)
+
+            filt_array -= full_back
+
+            fig, axs = plt.subplots(1,2, figsize=(16,8), sharey='row')
+
+            axs[0].set_title("Extracted Background: " + pulsar + " " + node)
+            axs[0].imshow(full_back)
+            axs[0].set_xlabel("Relative Phase index / 1024")
+            axs[0].set_ylabel("Pulse #")
+
+            axs[1].set_title("Extracted Pulses " + pulsar + " " + node)
+            axs[1].imshow(filt_array, vmin=0)
+            axs[1].set_xlabel("Relative Phase index / 1024")
+
+            plt.show()
     
-    elif (args.filter == True):
-        print("Too many peaks to filter, check RFI")
+        elif (args.filter == True):
+            print("Too Many Peaks, Check RFI")
     
     print("Now creating diagnostics")
     
 
-    if len(Peak_Locs) < 3:
+    if (len(Peak_Locs) < 3) and (len(Peak_Locs) != 0):
         sum_time_curve = np.sum(extract, axis=1)
     else: 
         sum_time_curve = np.sum(filt_array, axis=1)
-        print("Too Many Peaks, Check RFI")
+        print("Peak Finding Unsuccessful Check RFI")
 
     fig, axs = plt.subplots(2,2, figsize=(9,9), sharex='col')    
         
@@ -306,10 +390,12 @@ if (args.compile == True) and (len(good_nodes) > 0):
     axs[0].imshow(compiled_data, norm='linear', aspect='auto', interpolation='none', vmax=1*np.max(compiled_data), vmin=1*np.min(compiled_data))
     axs[0].set_ylabel("Pulse #")
     axs[0].set_xticks(np.cumsum(widths))
-    axs[0].set_xticklabels(np.array(nodes)[np.array(good_nodes)])
+    axs[0].set_xticklabels(np.array(nodes)[np.array(good_nodes)], rotation=45)
     #axs[0].margins(y=0)
     
     sum_time_curve = np.sum(compiled_data, axis=1)
+    
+    sum_pulse_curve = np.sum(compiled_data, axis=0)
     
     axs[1].set_title("Compiled Time Series")
     axs[1].plot(sum_time_curve, np.linspace(1,len(sum_time_curve),len(sum_time_curve)), marker='x', linewidth=1, color='k')
@@ -317,6 +403,21 @@ if (args.compile == True) and (len(good_nodes) > 0):
     axs[1].set_ylabel("Pulse #")
     axs[1].invert_yaxis()
     axs[1].margins(y=0)
+    '''
+    axs[1,0].set_title("Pulse Profiles")
+    axs[1,0].plot(np.linspace(1,len(sum_pulse_curve),len(sum_pulse_curve)), sum_pulse_curve, color='k')
+    axs[1,0].set_xlabel("Compile Phase Bins")
+    axs[1,0].set_ylabel("Intensity")
+    axs[1,0].margins(x=0)
+    
+    recovered = np.outer(sum_time_curve,sum_pulse_curve)
+    
+    axs[1,1].set_title("Recovered Profiles")
+    axs[1,1].imshow(recovered, norm='linear', aspect='auto', interpolation='none',vmax=1*np.max(recovered), vmin=1*np.min(recovered))
+    axs[1,1].set_ylabel("Pulse #")
+    axs[1,1].set_xticks(np.cumsum(widths))
+    axs[1,1].set_xticklabels(np.array(nodes)[np.array(good_nodes)], rotation=45)'''
+    
     
     plt.savefig(pulsar+"_compiled_diagnostic.png")
     plt.show()
